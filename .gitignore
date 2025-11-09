@@ -1,0 +1,45 @@
+# Ignore WordPress core files if using official distribution (optional)
+# Uncomment if you’re tracking only wp-content
+# /wp-admin/
+# /wp-includes/
+
+# Ignore OS and IDE files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Ignore WordPress specific files
+wp-config.php
+wp-config-sample.php
+
+# Ignore uploaded files (media)
+wp-content/uploads/
+wp-content/upgrade/
+
+# Ignore cache and logs
+wp-content/cache/
+wp-content/backups/
+*.log
+
+# Ignore Composer & vendor
+/vendor/
+composer.lock
+
+# Ignore node modules (if you use build tools)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Ignore build artifacts
+dist/
+build/
+*.zip
+*.tar.gz
+
+# Ignore environment files
+.env
+.env.local
+.env.*.local
