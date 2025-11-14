@@ -1,45 +1,70 @@
-# Ignore WordPress core files if using official distribution (optional)
-# Uncomment if you’re tracking only wp-content
-# /wp-admin/
-# /wp-includes/
+# ======================================
+# WordPress (Docker project)
+# ======================================
 
-# Ignore OS and IDE files
+# Ignore WordPress core (pulled via docker, not stored in repo)
+wordpress/*
+!wordpress/wp-content/
+!wordpress/wp-content/themes/
+!wordpress/wp-content/plugins/
+
+# Ignore uploads (media should NOT be in Git)
+wordpress/wp-content/uploads/
+
+# Ignore common OS files
 .DS_Store
 Thumbs.db
-.idea/
+
+# Node / Build tools (if you have custom themes)
+node_modules/
+*.log
+
+# Environment / Secrets
+.env
+.env.*
+docker-compose.override.yml
+
+# Docker
+*.pid
+*.seed
+*.bak
+
+# Ignore cache
+wp-content/cache/
+wp-content/*cache*/
+wordpress/wp-content/cache/
+wordpress/wp-content/*cache*/
+
+# Ignore backup files
+*.sql
+*.tar
+*.gz
+*.zip
+*.7z
+*.bak
+
+# Composer / PHP
+vendor/
+composer.lock
+
+# IDE files
 .vscode/
+.idea/
 *.swp
 *.swo
 
-# Ignore WordPress specific files
-wp-config.php
-wp-config-sample.php
-
-# Ignore uploaded files (media)
-wp-content/uploads/
-wp-content/upgrade/
-
-# Ignore cache and logs
-wp-content/cache/
-wp-content/backups/
+# Logs
+logs/
 *.log
 
-# Ignore Composer & vendor
-/vendor/
-composer.lock
+# OS trash
+.svn/
+*.tmp
 
-# Ignore node modules (if you use build tools)
-node_modules/
-npm-debug.log
-yarn-error.log
+# ======================================
+# For custom theme development
+# ======================================
+# If you build a custom theme inside /themes/theme-name
+# Keep the theme folder tracked in git
 
-# Ignore build artifacts
-dist/
-build/
-*.zip
-*.tar.gz
-
-# Ignore environment files
-.env
-.env.local
-.env.*.local
+*.pem
