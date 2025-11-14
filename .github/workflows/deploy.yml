@@ -1,19 +1,17 @@
-name: Build, tag and push image to ECR
-run: |
-  IMAGE_TAG=latest
-  docker build -t $ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile .
-  docker push $ECR_REPOSITORY:$IMAGE_TAG
+name: Deploy WordPress to EC2 via ECR + SSM
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
       ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+      INSTANCE_ID: ${{ secrets.INSTANCE_ID }}
 
     steps:
     - name: Checkout repo
@@ -29,24 +27,21 @@ jobs:
     - name: Login to Amazon ECR
       uses: aws-actions/amazon-ecr-login@v2
 
-    - name: Build, tag and push image to ECR
+    - name: Build and push Docker image
       run: |
         IMAGE_TAG=latest
+
+        echo "Building Docker image..."
         docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
+
+        echo "Pushing to ECR..."
         docker push $ECR_REPOSITORY:$IMAGE_TAG
 
-    - name: Deploy container via SSM
+    - name: Deploy via AWS SSM
       run: |
-        INSTANCE_ID="i-041d7e1ff1251ce50"
         aws ssm send-command \
           --instance-ids "$INSTANCE_ID" \
           --document-name "AWS-RunShellScript" \
-          --comment "Deploy WordPress" \
-          --parameters 'commands=[
-            "docker pull '"$ECR_REPOSITORY"':latest",
-            "docker stop wp || true",
-            "docker rm wp || true",
-            "docker run -d --name wp -p 80:80 '"$ECR_REPOSITORY"':latest"
-          ]' \
+          --comment "Deploy WordPress container" \
+          --parameters commands='["docker pull '"$ECR_REPOSITORY"':latest","docker stop wp || true","docker rm wp || true","docker run -d --name wp -p 80:80 '"$ECR_REPOSITORY"':latest"]' \
           --output text
-
