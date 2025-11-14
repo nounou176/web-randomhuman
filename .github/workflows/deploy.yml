@@ -49,3 +49,4 @@ jobs:
             "docker run -d --name wp -p 80:80 '"$ECR_REPOSITORY"':latest"
           ]' \
           --output text
+
