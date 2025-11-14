@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      AWS_REGION_VALUE: ${{ secrets.AWS_REGION_VALUE }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
       ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
       INSTANCE_ID: ${{ secrets.INSTANCE_ID }}
 
@@ -22,7 +22,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION_VALUE }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Login to Amazon ECR
       uses: aws-actions/amazon-ecr-login@v2
@@ -36,7 +36,7 @@ jobs:
     - name: Deploy via AWS SSM
       run: |
         aws ssm send-command \
-          --region "$AWS_REGION_VALUE" \
+          --region "$AWS_REGION" \
           --instance-ids "$INSTANCE_ID" \
           --document-name "AWS-RunShellScript" \
           --comment "Deploy WordPress container" \
