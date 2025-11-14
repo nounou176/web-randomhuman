@@ -1,4 +1,8 @@
-name: Deploy WordPress to EC2 via ECR + SSM
+name: Build, tag and push image to ECR
+run: |
+  IMAGE_TAG=latest
+  docker build -t $ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile .
+  docker push $ECR_REPOSITORY:$IMAGE_TAG
 
 on:
   push:
