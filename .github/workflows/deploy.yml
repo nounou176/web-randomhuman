@@ -30,7 +30,7 @@ jobs:
     - name: Build and push Docker image
       run: |
         IMAGE_TAG=latest
-        docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
+        docker build -t $ECR_REPOSITORY:$IMAGE_TAG -f docker/Dockerfile .
         docker push $ECR_REPOSITORY:$IMAGE_TAG
 
     - name: Deploy via AWS SSM
@@ -40,9 +40,22 @@ jobs:
           --instance-ids "$INSTANCE_ID" \
           --document-name "AWS-RunShellScript" \
           --comment "Deploy WordPress container" \
-          --parameters commands='["docker pull '"$ECR_REPOSITORY"':latest","docker stop wp || true","docker rm wp || true","docker run -d --name wp -p 80:80 '"$ECR_REPOSITORY"':latest"]' \
+          --parameters commands='[
+            "mkdir -p /srv/wp-uploads",
+            "docker pull '"$ECR_REPOSITORY"':latest",
+            "docker stop wp || true",
+            "docker rm wp || true",
+            "docker run -d --name wp \
+              -p 80:80 \
+              -v /srv/wp-uploads:/var/www/html/wp-content/uploads \
+              -e WORDPRESS_DB_HOST=wpdb:3306 \
+              -e WORDPRESS_DB_USER=wpuser \
+              -e WORDPRESS_DB_PASSWORD=wppass \
+              -e WORDPRESS_DB_NAME=wordpress \
+              '"$ECR_REPOSITORY"':latest"
+          ]' \
           --output text
+
     - name: Debug region
       run: |
         echo "REGION: $AWS_REGION"
-
