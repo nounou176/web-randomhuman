@@ -42,3 +42,7 @@ jobs:
           --comment "Deploy WordPress container" \
           --parameters commands='["docker pull '"$ECR_REPOSITORY"':latest","docker stop wp || true","docker rm wp || true","docker run -d --name wp -p 80:80 '"$ECR_REPOSITORY"':latest"]' \
           --output text
+    - name: Debug region
+      run: |
+        echo "REGION: $AWS_REGION"
+
