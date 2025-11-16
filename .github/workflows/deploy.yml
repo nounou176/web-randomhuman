@@ -48,7 +48,7 @@ jobs:
             "docker run -d --name wp \
               -p 80:80 \
               -v /srv/wp-uploads:/var/www/html/wp-content/uploads \
-              -e WORDPRESS_DB_HOST=mysql \
+              -e WORDPRESS_DB_HOST=wpdb:3306 \
               -e WORDPRESS_DB_USER=wpuser \
               -e WORDPRESS_DB_PASSWORD=wppass \
               -e WORDPRESS_DB_NAME=wpdb \
